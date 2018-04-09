@@ -4,7 +4,9 @@ import os
 import pickle
 import numpy as np
 import pandas as pd
+import subprocess as sp
 
+# Each dataset, training or testing, consists three files: image csv, image_ktrans and findgs csv
 
 def load_images_csv (path):
     df = pd.read_csv(path, header = 0, index_col = 0,

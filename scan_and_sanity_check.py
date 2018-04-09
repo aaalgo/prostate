@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import logging
+import pickle
 from glob import glob
 import dicom
 
@@ -47,7 +48,7 @@ class ImageInfo:
             assert dcm.Modality == 'MR'
             assert dcm.Manufacturer == 'SIEMENS'
             assert dcm.BodyPartExamined == 'PROSTATE'
-            assert dcm.PatientPosition == 'FFS'
+            assert dcm.PatientPosition == 'FFS' or dcm.PatientPosition == 'HFS'
             assert dcm.SamplesPerPixel == 1
             assert dcm.PhotometricInterpretation == 'MONOCHROME2'
             assert dcm.BitsAllocated == 16
@@ -69,7 +70,6 @@ class ImageInfo:
             assert series.ImageOrientationPatient == dcm.ImageOrientationPatient
 
             self.ImagePositionPatient = dcm.ImagePositionPatient
-            #self.ImageOrientationPatient = dcm.ImageOrientationPatient
             self.SliceLocation = dcm.SliceLocation
         except:
             logging.exception(dcm.path)
@@ -121,24 +121,34 @@ def scan_series (root, patient):
         # sanity check each image
         image = ImageInfo(dcm, series)
         break
+    return series.SeriesDescription
     pass
 
 def scan_patient (root):
     patient = None
     # scan directory of a patient
     # root e.g. raw/PROSTATEx/ProstateX-0113
+
+    data = {}
     for sub in glob(root + '/*'):
         for series in glob(sub + '/*'):
             if patient is None:
                 patient = PatientInfo(series)
-            scan_series(series, patient)
-    pass
+            sd = scan_series(series, patient)
+            data[sd] = root
+            pass
+        pass
+    return patient.PatientName, data
 
 def scan_all ():
+    data = {}
     for d in glob('raw/PROSTATEx/*'):
-        scan_patient(d)
+        k, v = scan_patient(d)
+        data[k] = v
         pass
-    pass
+    return data
 
+data = scan_all()
 
-scan_all()
+with open('data/dcm_list.pickle', 'wb') as f:
+    pickle.dump(data, f)

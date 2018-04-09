@@ -63,6 +63,7 @@ Challenge:  PROSTATEx-2
 
 	http://spiechallenges.cloudapp.net/competitions/7
 	http://spiechallenges.cloudapp.net/forums/7/
+	https://www.aapm.org/GrandChallenge/PROSTATEx-2/
 
 	
 
