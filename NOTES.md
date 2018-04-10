@@ -1,12 +1,14 @@
+Notes
+
 # PROSTATEx and PROSTATEx-2
 
 ## Data Overview
+
 [TCIA Data Page](https://wiki.cancerimagingarchive.net/display/Public/SPIE-AAPM-NCI+PROSTATEx+Challenges#935fa28f51c546c588e892026a1396c6)
 
 346 cases, each containing at least one biopsy-proved lesion.
 
 All studies include the following kinds of images:
-
 - T2W (T2-weighted): resolution 0.5mm, thickness 3.6mm.
 - DCE (dynamic contrast enhanced): resolution 1.5mm, thickness 4mm, temporal 3.5s. Ktrans is computed from this.
 - PD-W (proton density-weighted).  (same as DCE)
