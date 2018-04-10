@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 import sys 
 import os
+import logging
 import pickle
 import numpy as np
 import pandas as pd
 import subprocess as sp
+from volume import DicomVolume
 
 # Each dataset, training or testing, consists three files: image csv, image_ktrans and findgs csv
+if not os.path.exists('data/dcm_list.pickle'):
+    sp.check_call('./scan_and_sanity_check.py', shell=True)
+    pass
+with open('data/dcm_list.pickle', 'rb') as f:
+    dcm_list = pickle.load(f)
+    pass
 
 def load_images_csv (path):
-    df = pd.read_csv(path, header = 0, index_col = 0,
+    df = pd.read_csv(path, header = 0, index_col = None,
                 dtype={'ProxID': str,   # e.g. ProstateX-0000
                        'Name': str,     # e.g. ep2d_diff_tra_DYNDIST_ADC0
                        'fid': int,      # finding ID
@@ -26,10 +34,15 @@ def load_images_csv (path):
                        'Dim': str,      # 84x128x19x1
                        'DCMSerDescr': str, #  ep2d_diff_tra_DYNDIST_ADC
                        'DCMSerNum': int})
+    for _, row in df.iterrows():
+        prox = row['ProxID']
+        if not row['DCMSerDescr'] in dcm_list[prox]:
+            print(prox, row['DCMSerDescr'], 'not found')
+            print(dcm_list[prox].keys())
     return df
 
 def load_ktrans_csv (path):
-    df = pd.read_csv(path, header = 0, index_col = 0,
+    df = pd.read_csv(path, header = 0, index_col = None,
                 dtype = {'ProxID': str,
                          'fid': int,
                          'pos': str,
@@ -38,7 +51,7 @@ def load_ktrans_csv (path):
     return df
 
 def load_findings_csv (path):
-    df = pd.read_csv(path, header = 0, index_col = 0,
+    df = pd.read_csv(path, header = 0, index_col = None,
                 dtype = {'ProxID': str,
                          'fid': int,
                          'pos': str,    # e.g. 25.7457 31.8707 -38.511

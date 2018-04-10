@@ -25,6 +25,7 @@ class SeriesInfo:
             self.SeriesDescription = dcm.SeriesDescription
             self.PatientSex = dcm.PatientSex
             self.PatientAge = dcm.PatientAge
+            self.SeriesNumber = dcm.SeriesNumber
 
             self.ManufacturerModelName = dcm.ManufacturerModelName
             assert dcm.ManufacturerModelName == 'TrioTim' or dcm.ManufacturerModelName == 'Skyra'
@@ -59,6 +60,7 @@ class ImageInfo:
 
             assert series.ManufacturerModelName == dcm.ManufacturerModelName
             assert series.SeriesDescription == dcm.SeriesDescription
+            assert series.SeriesNumber == dcm.SeriesNumber
             assert series.PatientSex == dcm.PatientSex
             assert series.PatientAge == dcm.PatientAge
             #assert series.PatientSize == dcm.PatientSize  # height??
@@ -121,7 +123,7 @@ def scan_series (root, patient):
         # sanity check each image
         image = ImageInfo(dcm, series)
         break
-    return series.SeriesDescription
+    return series.SeriesDescription, series.SeriesNumber
     pass
 
 def scan_patient (root):
@@ -134,8 +136,19 @@ def scan_patient (root):
         for series in glob(sub + '/*'):
             if patient is None:
                 patient = PatientInfo(series)
-            sd = scan_series(series, patient)
-            data[sd] = root
+            sd, sn = scan_series(series, patient)
+            #if sd == 'tfl_dyn_fast_tra_1.5x1.5_t3.5sec':
+            if True:
+                if not sd in data:
+                    data[sd] = {}
+                if sn in data[sd]:
+                    print('conflict')
+                    print('', data[sd][sn])
+                    print('', series)
+                data[sd][sn] = series
+            #else:
+            #assert not sd in data, sd + ' ' + series + ' ' + data[sd]
+            #data[sd] = series
             pass
         pass
     return patient.PatientName, data
@@ -152,3 +165,4 @@ data = scan_all()
 
 with open('data/dcm_list.pickle', 'wb') as f:
     pickle.dump(data, f)
+
