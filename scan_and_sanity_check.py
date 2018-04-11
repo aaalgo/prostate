@@ -8,8 +8,8 @@ import dicom
 class PatientInfo:
     # information that should be same for all images of the patient
     def __init__ (self, path):
-        # path e.g. raw/PROSTATEx/ProstateX-0148/1.3.6.1.4.1.....
-        self.PatientName = path.split('/')[2]
+        # path e.g. data/PROSTATEx/MR/ProstateX-0148/1.3.6.1.4.1.....
+        self.PatientName = path.split('/')[3]
         print(self.PatientName)
         pass
     pass
