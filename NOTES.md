@@ -46,8 +46,9 @@ Predictions are evaluated with quadratic-weighted Cohen’s kappa coefficient.
 
 # Prostate Anatomy
 
-[Zone](http://www.cancer.ca/en/cancer-information/cancer-type/prostate/prostate-cancer/the-prostate/?region=on)
-[Zone 2](https://www.earthslab.com/anatomy/prostate/)
+- [Zone Explanation](http://www.cancer.ca/en/cancer-information/cancer-type/prostate/prostate-cancer/the-prostate/?region=on)
+- [Zone Explanation 2](https://www.earthslab.com/anatomy/prostate/)
+
 - AS: anterior fib. stroma ??
 - PZ: peripheral zone
 - SV: seinal vesical
