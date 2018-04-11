@@ -57,7 +57,7 @@ PROSTATEx-2 2017-05-15 - 2017-08-03
 - http://spiechallenges.cloudapp.net/forums/7/
 - https://www.aapm.org/GrandChallenge/PROSTATEx-2/
 
-## Prostate Fused-MRI-Pathology(https://wiki.cancerimagingarchive.net/display/Public/Prostate+Fused-MRI-Pathology)
+## [Prostate Fused-MRI-Pathology](https://wiki.cancerimagingarchive.net/display/Public/Prostate+Fused-MRI-Pathology)
 
 28 cases with
 
@@ -117,6 +117,5 @@ PROSTATEx-2 2017-05-15 - 2017-08-03
 - CZ: central zone (not seen in data)
 
 # Links
-- [TCIA](http://www.cancerimagingarchive.net/)
 - [知乎: T1看解剖，T2看病变](https://www.zhihu.com/question/38567276/answer/152934823)
 
