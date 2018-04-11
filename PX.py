@@ -18,9 +18,9 @@ class Finding:
         self.pos = np.array([float(x) for x in row['pos'].strip().split(' ')])
         self.zone = row['zone']
         self.ClinSig = row['ClinSig']
-        self.views = {'T2_cor': [], # pattern "^t2_"
-                      'T2_sag': [],
-                      'T2_tra': [],
+        self.views = {'T2_cor': [], # pattern "^t2_" and "cor"
+                      'T2_sag': [], #                    "sag"
+                      'T2_tra': [], #                 and others
                       'PD': [], # pattern "PD" or "dynamisch"
                       'DW': [], # pattern "diff" but not "t2"
                       'others': []
@@ -30,6 +30,7 @@ class Finding:
     def add_image (self, row):          # add a row from the image csv table
         view = None
         name = row['DCMSerDescr']
+        # determine view name
         if 't2' in name:
             if 'cor' in name:
                 view = 'T2_cor'
@@ -172,7 +173,7 @@ def load_findings_csv (path):
     return df
 
 
-def pool_csv (images, ktrans, findings):
+def merge_csv (images, ktrans, findings):
     # returns [[Findings]], array (by proxId) of array (by fid)
     lookup = {}
     for _, row in findings.iterrows():
@@ -192,12 +193,12 @@ def pool_csv (images, ktrans, findings):
     return findings
 
 def load_train_csv ():
-    return pool_csv(load_images_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Images-Train.csv'), \
+    return merge_csv(load_images_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Images-Train.csv'), \
            load_ktrans_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Images-KTrans-Train.csv'), \
            load_findings_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Findings-Train.csv'))
 
 def load_test_csv ():
-    return pool_csv(load_images_csv('raw/ProstateX-TestLesionInformation/ProstateX-Images-Test.csv'), \
+    return merge_csv(load_images_csv('raw/ProstateX-TestLesionInformation/ProstateX-Images-Test.csv'), \
            load_ktrans_csv('raw/ProstateX-TestLesionInformation/ProstateX-Images-KTrans-Test.csv'), \
            load_findings_csv('raw/ProstateX-TestLesionInformation/ProstateX-Findings-Test.csv'))
 

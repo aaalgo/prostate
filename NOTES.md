@@ -25,22 +25,13 @@ being benign or non-tumor). 112 is
 used for training and the remaining 70 for testing.
 Predictions are evaluated with quadratic-weighted Cohen’s kappa coefficient.
 
-## Competition Links
-
-PROSTATEx 2016-11-21 - 2017-02-16
-- http://spiechallenges.cloudapp.net/competitions/6
-- http://spiechallenges.cloudapp.net/forums/6/
-
-PROSTATEx-2 2017-05-15 - 2017-08-03
-- http://spiechallenges.cloudapp.net/competitions/7
-- http://spiechallenges.cloudapp.net/forums/7/
-- https://www.aapm.org/GrandChallenge/PROSTATEx-2/
-
-
-## Misc Links
-- [知乎: T1看解剖，T2看病变](https://www.zhihu.com/question/38567276/answer/152934823)
+- [View Imported Positive Lesions](http://www.aaalgo.com/demos/prostate/view/pos)
+- [View Imported Negative Lesions](http://www.aaalgo.com/demos/prostate/view/neg)
 
 # DICOM Geometry
+
+[Coordinate Systems](https://www.slicer.org/wiki/Coordinate_systems)
+[DICOM Fields](ftp://dicom.nema.org/MEDICAL/dicom/2015b/output/chtml/part03/sect_C.7.6.2.html)
 
 - World coordinate: X = (x, y, z)
 - ijk coordinate: i-column, j-row, k-slice.  Sort all dicoms by
@@ -62,4 +53,18 @@ PROSTATEx-2 2017-05-15 - 2017-08-03
 - SV: seinal vesical
 - TZ: transition zone
 - CZ: central zone (not seen in data)
+
+## Links
+
+PROSTATEx 2016-11-21 - 2017-02-16
+- http://spiechallenges.cloudapp.net/competitions/6
+- http://spiechallenges.cloudapp.net/forums/6/
+
+PROSTATEx-2 2017-05-15 - 2017-08-03
+- http://spiechallenges.cloudapp.net/competitions/7
+- http://spiechallenges.cloudapp.net/forums/7/
+- https://www.aapm.org/GrandChallenge/PROSTATEx-2/
+
+Misc Links
+- [知乎: T1看解剖，T2看病变](https://www.zhihu.com/question/38567276/answer/152934823)
 
