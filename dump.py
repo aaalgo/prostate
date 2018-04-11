@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import sys
 import logging
+from glob import glob
+import SimpleITK as itk
 import cv2
 from gallery import Gallery
 from PX import *
@@ -69,13 +71,59 @@ def dump_images (html, images, root):
         dump_image(html, row, root) 
     html.write('</td>')
 
+def dump_ktrans_image (html, row, root):
+    i, j, k = [int(x) for x in row['ijk'].split(' ')]
+    print("ijk", i,j,k)
+    sys.stdout.flush()
+    mhd_path = glob('data/PROSTATEx/Ktrans/%s/*.mhd' % row['ProxID'])
+    assert len(mhd_path) == 1
+    print(mhd_path)
+    itkimage = itk.ReadImage(mhd_path[0])
+    volume = itk.GetArrayFromImage(itkimage).astype(np.float32)
+    print("MHD", volume.shape)
+    L, H, W = volume.shape
+    try:
+        assert i >= 0 and i < W
+        assert j >= 0 and j < H
+        print("SLICE", k)
+        #print("I", i)
+        #i = slices[sli]
+        assert k >= 0 and k < L
+        
+        image = volume[k]
+        #print(np.max(image))
+        #image = cv2.normalize(image, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+        image *= 255/(np.max(image) * 0.8)
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+        print('MA', np.max(image))
+        #image[row, col, 1] = 255
+        #image[col, row, 2] = 255
+        cv2.circle(image, (i, j), 15, (0, 255, 0))
+    except:
+        logging.exception('xxx')
+        return
+    # now we have the image
+    global image_ID
+    image_fname = '%d.jpg' % image_ID
+    image_ID += 1
+    html.write('<table><tr><td><img src="%s"></img></td></tr><tr><td>%s</td></tr></table>' %
+                    (image_fname, volume.shape))
+    cv2.imwrite(os.path.join(root, image_fname), image)
+    pass
+
+def dump_ktrans_images (html, images, root):
+    html.write('<td>')
+    for row in images:
+        dump_ktrans_image(html, row, root) 
+    html.write('</td>')
+
 def dump_findings (path, findings):
     try:
         os.mkdir(path)
     except:
         pass
     with open(os.path.join(path, 'index.html'), 'w') as html:
-        html.write('<html><body><table border="1"><tr><th>ProxID</th><th>fid</th><th>zone</th><th>T2_cor</th><th>T2_sag</th><th>T2_tra</th><th>PD</th><th>DW</th><th>Others</th></tr>\n')
+        html.write('<html><body><table border="1"><tr><th>ProxID</th><th>fid</th><th>zone</th><th>T2_cor</th><th>T2_sag</th><th>T2_tra</th><th>PD</th><th>DW</th><th>Ktrans</th><th>Others</th></tr>\n')
         for patient in findings:
             for finding in patient:
                 html.write('<tr><td>%s</td><td>%d</td><td>%s</td>' % (finding.ProxID, finding.fid, finding.zone))
@@ -84,6 +132,7 @@ def dump_findings (path, findings):
                 dump_images(html, finding.views['T2_tra'], path)
                 dump_images(html, finding.views['PD'], path)
                 dump_images(html, finding.views['DW'], path)
+                dump_ktrans_images(html, finding.views['Ktrans'], path)
                 dump_images(html, finding.views['others'], path)
                 html.write('</tr>\n')
                 pass

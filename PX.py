@@ -23,6 +23,7 @@ class Finding:
                       'T2_tra': [], #                 and others
                       'PD': [], # pattern "PD" or "dynamisch"
                       'DW': [], # pattern "diff" but not "t2"
+                      'Ktrans': [],
                       'others': []
                       }
         pass
@@ -54,6 +55,17 @@ class Finding:
             print(pos)
             print(self.pos)
         self.views[view].append(row)
+        pass
+
+    def add_ktrans (self, row):          # add a row from the image csv table
+        assert row['ProxID'] == self.ProxID
+        assert row['fid'] == self.fid
+        pos = np.array([float(x) for x in row['pos'].strip().split(' ')])
+        if not np.all(pos == self.pos):
+            print('these should equal')
+            print(pos)
+            print(self.pos)
+        self.views['Ktrans'].append(row)
         pass
     pass
 
@@ -181,6 +193,9 @@ def merge_csv (images, ktrans, findings):
         pass
     for _, row in images.iterrows():
         lookup[row['ProxID']][row['fid']].add_image(row)
+        pass
+    for _, row in ktrans.iterrows():
+        lookup[row['ProxID']][row['fid']].add_ktrans(row)
         pass
 
     findings = []
