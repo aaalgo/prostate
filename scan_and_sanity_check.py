@@ -134,6 +134,7 @@ def scan_patient (root):
     data = {}
     for sub in glob(root + '/*'):
         for series in glob(sub + '/*'):
+            # directory of one series
             if patient is None:
                 patient = PatientInfo(series)
             sd, sn = scan_series(series, patient)
@@ -155,7 +156,8 @@ def scan_patient (root):
 
 def scan_all ():
     data = {}
-    for d in glob('raw/PROSTATEx/*'):
+    for d in glob('data/PROSTATEx/MR/*'):
+        # directory of one patient
         k, v = scan_patient(d)
         data[k] = v
         pass
@@ -163,6 +165,6 @@ def scan_all ():
 
 data = scan_all()
 
-with open('data/dcm_list.pickle', 'wb') as f:
+with open('cache/dcm_list.pickle', 'wb') as f:
     pickle.dump(data, f)
 

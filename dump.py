@@ -58,8 +58,8 @@ def dump_image (html, row, root):
     global image_ID
     image_fname = '%d.jpg' % image_ID
     image_ID += 1
-    html.write('<table><tr><td><img src="%s"></img></td></tr><tr><td>%s</td></tr></table>' %
-                    (image_fname, SerDescr))
+    html.write('<table><tr><td><img src="%s"></img></td></tr><tr><td>%s, %s, %s</td></tr></table>' %
+                    (image_fname, SerDescr, volume.images.shape, row['Dim']))
     cv2.imwrite(os.path.join(root, image_fname), image)
     pass
 

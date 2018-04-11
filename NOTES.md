@@ -1,10 +1,19 @@
-Notes
+# Datasets
+[TCIA Portal](http://www.cancerimagingarchive.net/)
 
-# PROSTATEx and PROSTATEx-2
+## [Prostate-3T](https://wiki.cancerimagingarchive.net/display/Public/Prostate-3T)
 
-## Data Overview
+This is the dataset of a [prostate segmentation challenge](https://wiki.cancerimagingarchive.net/display/Public/NCI-ISBI+2013+Challenge+-+Automated+Segmentation+of+Prostate+Structures).
 
-[TCIA Data Page](https://wiki.cancerimagingarchive.net/display/Public/SPIE-AAPM-NCI+PROSTATEx+Challenges#935fa28f51c546c588e892026a1396c6)
+- T2W MRI images, 3.0T Siemens TrioTim.
+
+### Files
+- `data/Prostate3T/MR`: MR images.
+- `data/Prostate3T/CG_PZ`: segmentation of CG and PZ zones.
+- `data/Prostate3T/SV_NVB`: segmentation of SV and NVB zones.
+
+
+## [PROSTATEx and PROSTATEx-2](https://wiki.cancerimagingarchive.net/display/Public/SPIE-AAPM-NCI+PROSTATEx+Challenges#935fa28f51c546c588e892026a1396c6)
 
 346 cases, each containing at least one biopsy-proved lesion.
 
@@ -27,6 +36,58 @@ Predictions are evaluated with quadratic-weighted Cohen’s kappa coefficient.
 
 - [View Imported Positive Lesions](http://www.aaalgo.com/demos/prostate/view/pos)
 - [View Imported Negative Lesions](http://www.aaalgo.com/demos/prostate/view/neg)
+
+### Files:
+- `data/PROSTATEx/MR`: MR images.
+- `data/PROSTATEx/Ktrans`: Ktrans images.
+- `data/PROSTATEx/*Information*`: labels and other meta data.
+
+### TODO:
+- Find PROSTATEx test set groundtruth.
+- Find PROSTATEx-2 label data.
+
+### Links
+
+PROSTATEx 2016-11-21 - 2017-02-16
+- http://spiechallenges.cloudapp.net/competitions/6
+- http://spiechallenges.cloudapp.net/forums/6/
+
+PROSTATEx-2 2017-05-15 - 2017-08-03
+- http://spiechallenges.cloudapp.net/competitions/7
+- http://spiechallenges.cloudapp.net/forums/7/
+- https://www.aapm.org/GrandChallenge/PROSTATEx-2/
+
+## Prostate Fused-MRI-Pathology(https://wiki.cancerimagingarchive.net/display/Public/Prostate+Fused-MRI-Pathology)
+
+28 cases with
+
+- T1, T2, DW and DCE MRI images.
+- H&E histopathology images
+  * sectioned & quartered, 4 slides for each section.
+  * 4 slides/section, scanned 20x with Aperio slide scanner into 4. svs images.
+  * stitched to make .tiff
+
+## [TCGA-PRAD](https://wiki.cancerimagingarchive.net/display/Public/TCGA-PRAD)
+
+- 14 patients with CT, PT and MR.
+- Clinical data at [GDC Data
+  Portal](https://gdc-portal.nci.nih.gov/projects/t?filters=%7B%22op%22:%22and%22,%22content%22:%5B%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22program.name%22,%22value%22:%5B%22TCGA%22%5D%7D%7D%5D%7D) 
+
+
+## [NaF Prostate](https://wiki.cancerimagingarchive.net/display/Public/NaF+Prostate)
+- PET/CT
+
+## [PROSTATE-DIAGNOSIS](https://wiki.cancerimagingarchive.net/display/Public/PROSTATE-DIAGNOSIS)
+
+- 92 patients
+- T1, T2 and DCE
+
+
+## Other Datasets with Limited Access
+
+-[Qin Prostate](http://dx.doi.org/10.7937/K9/TCIA.2016.fADs26kG)
+-[Prostate-MRI](http://dx.doi.org/10.7937/K9/TCIA.2016.6046GUDv)
+
 
 # DICOM Geometry
 
@@ -55,17 +116,7 @@ Predictions are evaluated with quadratic-weighted Cohen’s kappa coefficient.
 - TZ: transition zone
 - CZ: central zone (not seen in data)
 
-## Links
-
-PROSTATEx 2016-11-21 - 2017-02-16
-- http://spiechallenges.cloudapp.net/competitions/6
-- http://spiechallenges.cloudapp.net/forums/6/
-
-PROSTATEx-2 2017-05-15 - 2017-08-03
-- http://spiechallenges.cloudapp.net/competitions/7
-- http://spiechallenges.cloudapp.net/forums/7/
-- https://www.aapm.org/GrandChallenge/PROSTATEx-2/
-
-Misc Links
+# Links
+- [TCIA](http://www.cancerimagingarchive.net/)
 - [知乎: T1看解剖，T2看病变](https://www.zhihu.com/question/38567276/answer/152934823)
 

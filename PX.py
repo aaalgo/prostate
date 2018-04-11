@@ -59,11 +59,11 @@ class Finding:
 
 
 # Each dataset, training or testing, consists three files: image csv, image_ktrans and findgs csv
-if not os.path.exists('data/dcm_list.pickle'):
+if not os.path.exists('cache/dcm_list.pickle'):
     # scan all dicom files
     sp.check_call('./scan_and_sanity_check.py', shell=True)
     pass
-with open('data/dcm_list.pickle', 'rb') as f:
+with open('cache/dcm_list.pickle', 'rb') as f:
     dcm_list = pickle.load(f)
     pass
 
@@ -143,7 +143,7 @@ def load_images_csv (path):
                        'TopLevel': str, # 0-image  1-volume  NA-??
                        'SpacingBetweenSlices': float,   # 3
                        'VoxelSpacing': str, # 2,2,3
-                       'Dim': str,      # 84x128x19x1
+                       'Dim': str,      # 84x128x19x1, this is the DICOM volume shape
                        'DCMSerDescr': str, #  ep2d_diff_tra_DYNDIST_ADC
                        'DCMSerNum': int})
     for _, row in df.iterrows():
@@ -193,14 +193,14 @@ def merge_csv (images, ktrans, findings):
     return findings
 
 def load_train_csv ():
-    return merge_csv(load_images_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Images-Train.csv'), \
-           load_ktrans_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Images-KTrans-Train.csv'), \
-           load_findings_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Findings-Train.csv'))
+    return merge_csv(load_images_csv('data/PROSTATEx/ProstateX-TrainingLesionInformationv2/ProstateX-Images-Train.csv'), \
+           load_ktrans_csv('data/PROSTATEx/ProstateX-TrainingLesionInformationv2/ProstateX-Images-KTrans-Train.csv'), \
+           load_findings_csv('data/PROSTATEx/ProstateX-TrainingLesionInformationv2/ProstateX-Findings-Train.csv'))
 
 def load_test_csv ():
-    return merge_csv(load_images_csv('raw/ProstateX-TestLesionInformation/ProstateX-Images-Test.csv'), \
-           load_ktrans_csv('raw/ProstateX-TestLesionInformation/ProstateX-Images-KTrans-Test.csv'), \
-           load_findings_csv('raw/ProstateX-TestLesionInformation/ProstateX-Findings-Test.csv'))
+    return merge_csv(load_images_csv('data/PROSTATEx/ProstateX-TestLesionInformation/ProstateX-Images-Test.csv'), \
+           load_ktrans_csv('data/PROSTATEx/ProstateX-TestLesionInformation/ProstateX-Images-KTrans-Test.csv'), \
+           load_findings_csv('data/PROSTATEx/ProstateX-TestLesionInformation/ProstateX-Findings-Test.csv'))
 
 
 if __name__ == '__main__':
