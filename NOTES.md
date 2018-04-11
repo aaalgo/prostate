@@ -40,3 +40,17 @@ PROSTATEx-2 2017-05-15 - 2017-08-03
 ## Misc Links
 - [知乎: T1看解剖，T2看病变](https://www.zhihu.com/question/38567276/answer/152934823)
 
+# DICOM Geometry
+
+- World coordinate: X = (x, y, z)
+- ijk coordinate: i-column, j-row, k-slice.  Sort all dicoms by
+  InstanceNumber and k is the 0-based index.
+- World matrix (wm):     col(x, y, z, 1) = wm x col(i, j, k, 1)
+- O = dcm.ImagePositionPatient: world coordinate of pixel (0,0)
+- dirI, dirJ = dcm.dcm.ImageOrientationPatient: direction of first row
+  and first column.
+- spJ, spI = dcm.PixelSpacing
+- i = dot(X-O, dirI) / spI
+- j = dot(X-O, dirJ) / spJ
+
+

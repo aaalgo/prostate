@@ -10,10 +10,72 @@ from volume import DicomVolume
 
 # Each dataset, training or testing, consists three files: image csv, image_ktrans and findgs csv
 if not os.path.exists('data/dcm_list.pickle'):
+    # scan all dicom files
     sp.check_call('./scan_and_sanity_check.py', shell=True)
     pass
 with open('data/dcm_list.pickle', 'rb') as f:
     dcm_list = pickle.load(f)
+    pass
+
+def sanity_check_coord (row):
+    # each lesion has an ijk index and a position
+    # the two are linked by the world matrix, i.e.
+    #       pos = wm * ijk
+    # wm has shape 4x4, last row being (0,0,0,1)
+    # https://www.slicer.org/wiki/Coordinate_systems
+    # 
+    try:
+        pos = row['pos'].strip().split(' ')
+        wm = row['WorldMatrix'].strip().split(',')
+        ijk = row['ijk'].strip().split(' ')
+        pos = np.array([float(x) for x in pos] + [1])
+        wm = np.reshape(np.array([float(x) for x in wm]), (4,4))
+        ijk = np.array([float(x) for x in ijk] + [1])
+        ijkp = np.matmul(np.linalg.inv(wm), pos)
+        assert np.all(np.abs(ijk - ijkp) < 0.5000001)   # consider 0.5 OK for rounding error
+    except:
+        logging.exception('coordinates in consistant [pos, ijk, inv(wm)xijk]')
+        logging.error(pos)
+        logging.error(ijk)
+        logging.error(ijkp)
+    pass
+
+def sanity_check_coord_dicom (row, dcm):
+    # each lesion has an ijk index and a position
+
+    # ftp://dicom.nema.org/MEDICAL/dicom/2015b/output/chtml/part03/sect_C.7.6.2.html
+
+    # X -> right
+    # Y -> back
+    # Z -> head
+
+    # i/column
+    # j/row
+
+    # dcm
+    origin = [float(v) for v in dcm.ImagePositionPatient]
+    rx, ry, rz, cx, cy, cz = [float(v) for v in dcm.ImageOrientationPatient]
+    dir_i = np.array([rx, ry, rz])    # row direction
+    dir_j = np.array([cx, cy, cz])    # column direction
+    dir_i /= np.linalg.norm(dir_i)   # norm should already be 1
+    dir_j /= np.linalg.norm(dir_j)   # norm should already be 1
+    dir_k = np.cross(dir_i, dir_j)    # ixj -> k
+
+    pos = np.array([float(x) for x in row['pos'].strip().split(' ')])
+    ijk = np.array([float(x) for x in row['ijk'].strip().split(' ')])
+
+    pos -= origin
+
+    spa_j, spa_i = [float(v) for v in dcm.PixelSpacing]
+    assert spa_j == spa_i
+
+    i = np.dot(pos, dir_i) / spa_i
+    j = np.dot(pos, dir_j) / spa_j
+    k = np.dot(pos, dir_k)
+    #print("========")
+    #print(ijk)
+    #print(i, j, k)
+    assert max(abs(ijk[0] - i), abs(ijk[1] - j)) < 1.00001
     pass
 
 def load_images_csv (path):
@@ -35,6 +97,7 @@ def load_images_csv (path):
                        'DCMSerDescr': str, #  ep2d_diff_tra_DYNDIST_ADC
                        'DCMSerNum': int})
     for _, row in df.iterrows():
+        sanity_check_coord(row)
         prox = row['ProxID']
         if not row['DCMSerDescr'] in dcm_list[prox]:
             print(prox, row['DCMSerDescr'], 'not found')
