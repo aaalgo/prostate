@@ -8,6 +8,55 @@ import pandas as pd
 import subprocess as sp
 from volume import DicomVolume
 
+class Finding:
+    # one lesion, with multiple views
+
+    def __init__ (self, row):            # construct from a row from finding csv table
+        self.ProxID = row['ProxID']      # patient ID
+        self.fid = row['fid']            # finding ID
+                                         # (ProxID, fid) is unique
+        self.pos = np.array([float(x) for x in row['pos'].strip().split(' ')])
+        self.zone = row['zone']
+        self.ClinSig = row['ClinSig']
+        self.views = {'T2_cor': [], # pattern "^t2_"
+                      'T2_sag': [],
+                      'T2_tra': [],
+                      'PD': [], # pattern "PD" or "dynamisch"
+                      'DW': [], # pattern "diff" but not "t2"
+                      'others': []
+                      }
+        pass
+
+    def add_image (self, row):          # add a row from the image csv table
+        view = None
+        name = row['DCMSerDescr']
+        if 't2' in name:
+            if 'cor' in name:
+                view = 'T2_cor'
+            elif 'sag' in name:
+                view = 'T2_sag'
+            else:
+                view = 'T2_tra'
+                pass
+        elif 'diff' in name:
+            view = 'DW'
+        elif 'PD' in name or 'dynamisch' in name:
+            view = 'PD'
+        else:
+            view = 'others'
+
+        assert row['ProxID'] == self.ProxID
+        assert row['fid'] == self.fid
+        pos = np.array([float(x) for x in row['pos'].strip().split(' ')])
+        if not np.all(pos == self.pos):
+            print('these should equal')
+            print(pos)
+            print(self.pos)
+        self.views[view].append(row)
+        pass
+    pass
+
+
 # Each dataset, training or testing, consists three files: image csv, image_ktrans and findgs csv
 if not os.path.exists('data/dcm_list.pickle'):
     # scan all dicom files
@@ -123,15 +172,34 @@ def load_findings_csv (path):
     return df
 
 
+def pool_csv (images, ktrans, findings):
+    # returns [[Findings]], array (by proxId) of array (by fid)
+    lookup = {}
+    for _, row in findings.iterrows():
+        lookup.setdefault(row['ProxID'], {})[row['fid']] = Finding(row)
+        pass
+    for _, row in images.iterrows():
+        lookup[row['ProxID']][row['fid']].add_image(row)
+        pass
+
+    findings = []
+    proxIDs = list(lookup.keys())
+    proxIDs.sort()
+    for k in proxIDs:
+        v = list(lookup[k].values())
+        v.sort(key=lambda x: x.fid)
+        findings.append(v)
+    return findings
+
 def load_train_csv ():
-    return load_images_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Images-Train.csv'), \
+    return pool_csv(load_images_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Images-Train.csv'), \
            load_ktrans_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Images-KTrans-Train.csv'), \
-           load_findings_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Findings-Train.csv')
+           load_findings_csv('raw/ProstateX-TrainingLesionInformationv2/ProstateX-Findings-Train.csv'))
 
 def load_test_csv ():
-    return load_images_csv('raw/ProstateX-TestLesionInformation/ProstateX-Images-Test.csv'), \
+    return pool_csv(load_images_csv('raw/ProstateX-TestLesionInformation/ProstateX-Images-Test.csv'), \
            load_ktrans_csv('raw/ProstateX-TestLesionInformation/ProstateX-Images-KTrans-Test.csv'), \
-           load_findings_csv('raw/ProstateX-TestLesionInformation/ProstateX-Findings-Test.csv')
+           load_findings_csv('raw/ProstateX-TestLesionInformation/ProstateX-Findings-Test.csv'))
 
 
 if __name__ == '__main__':

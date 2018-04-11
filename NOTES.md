@@ -53,4 +53,13 @@ PROSTATEx-2 2017-05-15 - 2017-08-03
 - i = dot(X-O, dirI) / spI
 - j = dot(X-O, dirJ) / spJ
 
+# Prostate Anatomy
+
+[Zone](http://www.cancer.ca/en/cancer-information/cancer-type/prostate/prostate-cancer/the-prostate/?region=on)
+[Zone 2](https://www.earthslab.com/anatomy/prostate/)
+- AS: anterior fib. stroma ??
+- PZ: peripheral zone
+- SV: seinal vesical
+- TZ: transition zone
+- CZ: central zone (not seen in data)
 
