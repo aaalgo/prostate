@@ -116,6 +116,5 @@ PROSTATEx-2 2017-05-15 - 2017-08-03
 - TZ: transition zone
 - CZ: central zone (not seen in data)
 
-# Links
-- [知乎: T1看解剖，T2看病变](https://www.zhihu.com/question/38567276/answer/152934823)
+
 
